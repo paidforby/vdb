@@ -3,7 +3,7 @@ Description=Gunicorn instance to serve a Video Data Base
 After=network.target
 
 [Service]
-User=vdb
+User=vdb_user
 Group=www-data
 WorkingDirectory=/home/vdb_user/vdb
 Environment="PATH=/home/vdb_user/vdb/.env/bin"

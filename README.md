@@ -3,6 +3,8 @@ a lightly-protected video data base running on flask
 
 For testing and development, execute the following commands,  
 ```
+git clone https://github.com/paidforby/vdb
+cd vdb
 virtualenv .env
 source .env/bin/activate
 pip install Flask configparser
@@ -11,8 +13,35 @@ flask run
 ```
 Then go to http://localhost:5000/vdb and enter the default password `NameOfYourFirstPet` and you should be able to watch the test movie *Pencilo de Colores*.  
 
-For production, use a web server gateway of your choice. I used Gunicorn and ran it as a systemd service. A wsgi.py for gunicorn and an example service file are included. Modify these files for your web server.  
+For production, use a web server gateway of your choice. I used Gunicorn and ran it as a systemd service. A wsgi.py for gunicorn and an example service file are included. Modify these files for your web server. It is also advisable to create a special user with sudo privleges for this webapp, such as `vdb_user`. Then log into your web server as `vdb_user` and execute the following,  
+```
+git clone https://github.com/paidforby/vdb
+cd vdb
+virtualenv .env
+source .env/bin/activate
+pip install Flask configparser gunicorn
+sudo cp vdb.service /etc/systemd/system/.
+sudo systemctl start vdb
+```
+Now, you should be able to navigate to your server's IP address and see the placeholder website. If this website will be linked to a domain and you are using something like nginx you can modify the root block of to that website's nginx config to look like this,
+```
+location / {
+    include proxy_params;
+    proxy_pass http://unix:/home/vdb_user/vdb/vdb.sock;
+}
+```
+and run `sudo systemctl restart nginx`  
 
-Place your video files in the `vdb/` directory and link to them from `vdb.html`.  
+For more complicated setups, reference nginx (or whatever you are using) documentation.  
+
+To update and redeploy on a live web server, perform the following steps,
+```
+git fetch origin 
+git checkout FETCH_HEAD -- app.py README.md
+sudo systemctl restart vdb
+```
+This will only update any functional changes made to the python application. The content of your website, the videos in your database, and configurations for your server will not be modified. These must be managed manually.  
+
+Finally, place your video files in the `vdb/` directory and link to them from `vdb.html`.  
 
 Disclaimer: the security of this web app is in no way verified and should be consider *very* light protection. Do not place any sensitive content in the protected files or directory.  
