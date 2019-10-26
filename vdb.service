@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve a Video Data Base
+After=network.target
+
+[Service]
+User=vdb
+Group=www-data
+WorkingDirectory=/home/vdb_user/vdb
+Environment="PATH=/home/vdb_user/vdb/.env/bin"
+ExecStart=/home/vdb_user/vdb/.env/bin/gunicorn --workers 3 --bind unix:vdb.sock -m 007 wsgi:app
+
+[Install]
+WantedBy=multi-user.target

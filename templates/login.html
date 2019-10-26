@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Movie Night VDB</title>
+    <style type="text/css">
+      body {
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      <strong>Welecome to your personal VDB</strong>
+    </p>
+    <p>
+      {% if session['logged_in'] %}
+      You're logged in already!
+      {% else %}
+      <form action="/vdb" method="POST">
+        Security question goes here? <input name="password" placeholder="Answer">.
+        <br></br>
+        <input type="submit" value="Log in">
+      </form>
+      {% endif %}
+    </p>
+
+  </body>
