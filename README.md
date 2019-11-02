@@ -7,11 +7,16 @@ git clone https://github.com/paidforby/vdb
 cd vdb
 virtualenv .env
 source .env/bin/activate
-pip install Flask configparser
+pip install Flask configparser celery youtube-dl
 export FLASK_APP=app.py
 flask run
 ```
 Then go to http://localhost:5000/vdb and enter the default password `NameOfYourFirstPet` and you should be able to watch the test movie *Pencilo de Colores*.  
+
+To run the audio extractor and downloader portion of this flask app, you will also need to run a celery worker like so,
+```
+celery worker -A app.celery --loglevel=debug
+```
 
 For production, use a web server gateway of your choice. I used Gunicorn and ran it as a systemd service. A wsgi.py for gunicorn and an example service file are included. Modify these files for your web server. It is also advisable to create a special user with sudo privleges for this webapp, such as `vdb_user`. Then log into your web server as `vdb_user` and execute the following,  
 ```
