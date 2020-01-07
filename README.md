@@ -20,13 +20,24 @@ celery worker -A app.celery --loglevel=debug
 
 For production, use a web server gateway of your choice. I used Gunicorn and ran it as a systemd service. A wsgi.py for gunicorn and an example service file are included. Modify these files for your web server. It is also advisable to create a special user with sudo privleges for this webapp, such as `vdb_user`. Then log into your web server as `vdb_user` and execute the following,  
 ```
+sudo apt update
+sudo apt install python python-pip rabbitmq-server git
+sudo pip install virtualenv
 git clone https://github.com/paidforby/vdb
 cd vdb
 virtualenv .env
 source .env/bin/activate
-pip install Flask configparser gunicorn
+pip install Flask configparser gunicorn celery youtube-dl
 sudo cp vdb.service /etc/systemd/system/.
 sudo systemctl start vdb
+sudo cp celery.service /etc/systemd/system/.
+sudo cp celerybeat.service /etc/systemd/system/.
+sudo cp -r conf.d /etc/.
+mkdir /var/log/celery
+mkdir /var/run/celery
+sudo chown -R vdb_user /var/log/celery
+sudo chown -R vdb_user /var/run/celery
+sudo systemctl start celery
 ```
 Now, you should be able to navigate to your server's IP address and see the placeholder website. If this website will be linked to a domain and you are using something like nginx you can modify the root block of to that website's nginx config to look like this,
 ```

@@ -131,11 +131,19 @@ def protected(filename):
 @app.route('/ytdl', methods=['GET', 'POST'])
 def ytdl():
     if request.method == "POST":
-        video_url = request.args.get('url')
-        task = dl.delay(video_url)
-        return jsonify({}), 202, {'Location': url_for('taskstatus', task_id=task.id)}
+        if request.form['password'] == config['Opts']['Password1']:
+            session['logged_in'] = True
+            return render_template('ytdl.html')
+
+    if check_login():
+        if request.method == "POST":
+            video_url = request.args.get('url')
+            task = dl.delay(video_url)
+            return jsonify({}), 202, {'Location': url_for('taskstatus', task_id=task.id)}
+        else:
+            return render_template('ytdl.html')
     else:
-        return render_template('ytdl.html')
+        return render_template('login.html')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
