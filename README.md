@@ -1,17 +1,18 @@
 # vdb  
-a lightly-protected video data base running on flask  
+a lightly-protected video+audio data base running on flask, plus an audio extractor+downloader feature
+NOTE: this is becoming a place where I store random python/flask related ideas
 
 For testing and development, execute the following commands,  
 ```
 git clone https://github.com/paidforby/vdb
 cd vdb
-virtualenv .env
-source .env/bin/activate
-pip install Flask configparser celery youtube-dl
+python -m venv .venv
+source .venv/bin/activate
+pip3 install Flask configparser celery youtube-dl
 export FLASK_APP=app.py
-flask run
+flask run --host=0.0.0.0 --port=8000
 ```
-Then go to http://localhost:5000/vdb and enter the default password `NameOfYourFirstPet` and you should be able to watch the test movie *Pencilo de Colores*.  
+Then go to http://localhost:8000/vdb and enter the default password `NameOfYourFirstPet` and you should be able to watch the test movie *Pencilo de Colores*.  
 
 To run the audio extractor and downloader portion of this flask app, you will also need to run a celery worker like so,
 ```

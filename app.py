@@ -145,5 +145,42 @@ def ytdl():
     else:
         return render_template('login.html')
 
+browserpath = os.path.join(os.getcwd(), "music");
+
+def list_files(directory, extension):
+    return (f for f in os.listdir(directory) if f.endswith('.' + extension))
+
+@app.route('/browser')
+def browse():
+    itemList = sorted(os.listdir(browserpath), key=str.lower)
+    return render_template('browser.html', itemList=itemList)
+
+@app.route('/browser/<path:urlFilePath>')
+def browser(urlFilePath):
+    #Remove trailing slash
+    urlFilePath = urlFilePath.rstrip('/')
+    nestedFilePath = os.path.join(browserpath, urlFilePath)
+    # Prevent directory traversal
+    if os.path.realpath(nestedFilePath) != nestedFilePath:
+        return "no directory traversal please."
+    # If the given path is a directory, list it's contents
+    if os.path.isdir(nestedFilePath):
+        itemList = sorted(os.listdir(nestedFilePath), key=str.lower)
+        return render_template('browser.html', urlFilePath=urlFilePath, itemList=itemList)
+
+    # If the given path is a file, try playing the file
+    if os.path.isfile(nestedFilePath):
+        folderPath = os.path.dirname(urlFilePath)
+        filename = os.path.join('music', urlFilePath)
+        itemList = sorted(list_files(os.path.dirname(nestedFilePath), "mp3"), key=str.lower)
+        entry = itemList.index(os.path.basename(nestedFilePath))
+        if entry < len(itemList)-1:
+            fileNext = itemList[entry+1]
+        else:
+            fileNext = ''
+        return render_template('browser.html', urlFilePath=folderPath, itemList=itemList, song=filename, songNext=fileNext)
+
+    return 'something bad happened'
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

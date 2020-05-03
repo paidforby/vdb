@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+  <head>
+    <meta http-equiv="Content-Type" content="audio/mpeg" /><!--; charset=UTF-8-->
+    <title>Movie Night VDB</title>
+    <style type="text/css">
+      body {
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+      <ul>
+	{% for item in itemList %}
+        <li><a href="/browser/{{ urlFilePath }}/{{ item |safe}}">{{ item }}</a></li>
+        {% endfor %}
+      </ul>
+    </p>
+    {% if song %}
+    <audio id="audioPlayer" controls autoplay>
+	    <source src="{{ url_for('static', filename=song) }}" type="audio/mpeg" >
+    </audio>
+    {% else %}
+    <audio id="audioPlayer" controls autoplay> </audio>
+    {% endif %}
+  </body>
+
+  <script type="text/javascript">
+	var audioPlayer = document.getElementById('audioPlayer');
+	audioPlayer.onended = function(){
+		window.location = "/browser/{{ urlFilePath }}/{{ songNext |safe}}"
+	}
+  </script>
