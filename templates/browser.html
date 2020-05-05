@@ -11,7 +11,7 @@
   <body>
       <ul>
 	{% for item in itemList %}
-        <li><a href="/browser/{{ urlFilePath }}/{{ item |safe}}">{{ item }}</a></li>
+        <li><a href="{{ urlFilePath }}/{{ item |safe}}">{{ item }}</a></li>
         {% endfor %}
       </ul>
     </p>
@@ -27,6 +27,6 @@
   <script type="text/javascript">
 	var audioPlayer = document.getElementById('audioPlayer');
 	audioPlayer.onended = function(){
-		window.location = "/browser/{{ urlFilePath }}/{{ songNext |safe}}"
+		window.location = "{{ urlFilePath }}/{{ songNext |safe}}"
 	}
   </script>
